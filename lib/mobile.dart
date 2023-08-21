@@ -9,6 +9,9 @@ class _MobilePageState extends State<MobilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Laptop page'),
+      ),
       body: ClipPath(
         clipper: CustomClipPath(),
         child: Container(
