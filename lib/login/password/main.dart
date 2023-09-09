@@ -1,11 +1,16 @@
 import 'dart:async';
-
+import 'package:first_pr/login/password/SignupPage.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:ui';
-import 'account_detail.dart';
-import 'report.dart';
-import 'recycle.dart';
+import '../../account_detail.dart';
+import '../../report.dart';
+import '../../recycle.dart';
+import 'welcome.dart';
+import 'LoginPage.dart';
+import 'SignupPage.dart';
+import 'forget_password_mail.dart';
+import 'forget_password_model_bottom_sheet.dart';
 
 
 void main() {
@@ -20,7 +25,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'varun Gay',
       debugShowCheckedModeBanner: false,
-      home: const MyHomePage(),
+      initialRoute: '/welcome', // Set the initial route
+      routes: {
+        '/welcome': (context) => WelcomeScreen(), // Welcome screen as the initial route
+        '/login': (context) => LoginPage(),// Define your login page
+        '/signup': (context) => SignupPage(), // Define your signup page
+      },
     );
   }
 }
@@ -120,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage>
   width: 460,
   height: 106,
   decoration: ShapeDecoration(
-  color: Color(0xFF09631D),
+  //color: Color(0xFF09631D),
   shape: RoundedRectangleBorder(
   borderRadius: BorderRadius.only(
   bottomLeft: Radius.circular(30),
@@ -157,19 +167,19 @@ class _MyHomePageState extends State<MyHomePage>
   color: customWhiteColor,
   boxShadow: [
   BoxShadow(
-  blurRadius: 10,
-  spreadRadius: 3,
+  blurRadius: 5,
+  spreadRadius: 1,
   offset: isClicked
   ? const Offset(-7, 7)
       : const Offset(-7, 7),
   color: Colors.black38,
   ),
   BoxShadow(
-  blurRadius: 10,
-  spreadRadius: 3,
+  blurRadius: 5,
+  spreadRadius: 1,
   offset: isClicked
-  ? const Offset(7, -7)
-      : const Offset(7, -7),
+  ? const Offset(5, -5)
+      : const Offset(5, -5),
   color: Colors.white70,
   ),
   ],
@@ -209,102 +219,87 @@ class _MyHomePageState extends State<MyHomePage>
   ],
   ),
   Container(
-  width: double.infinity,
-  height: 10,
-  padding: EdgeInsets.only(left: 10, bottom: 10),
-  child: Align(
-  alignment: Alignment.bottomLeft,
-  child: Text(
-  'STEPS TO RECYCLE:',
-  style: TextStyle(
-  color: Colors.black,
-  fontSize: 33,
-  fontWeight: FontWeight.bold,
+  height: 20,
   ),
-  ),
-  ),
-  ),
-  Column(
-  children: [
-  Stack(
-  children: [
-  Align(
-  alignment: Alignment.center,
-  child: InkWell(
-  onTap: () {
-  print(currentIndex);
-  },
-  child: CarouselSlider(
-  items: imageList
-      .map(
-  (item) =>
-  Image.asset(
-  item['image_path'],
-  width: 380,
-  fit: BoxFit.cover,
-  ),
-  )
-      .toList(),
-  carouselController: carouselController,
-  options: CarouselOptions(
-  scrollPhysics: const BouncingScrollPhysics(),
-  autoPlay: false,
-  aspectRatio: 2,
-  viewportFraction: 1,
-  height: 300,
-  onPageChanged: (index, reason) {
-  setState(() {
-  currentIndex = index;
-  });
-  },
-  ),
-  ),
-  ),
-  ),
-  Positioned(
-  bottom: 10,
-  left: 0,
-  right: 0,
-  child: Row(
-  mainAxisAlignment: MainAxisAlignment
-      .center,
-  children: imageList
-      .asMap()
-      .entries
-      .map(
-  (entry) {
-  return GestureDetector(
-  onTap: () =>
-  carouselController
-      .animateToPage(
-  entry.key),
-  child: Container(
-  width: currentIndex == entry.key
-  ? 17
-      : 7,
-  height: 8.0,
-  margin: const EdgeInsets
-      .symmetric(
-  horizontal: 3.0),
-  decoration: BoxDecoration(
-  borderRadius: BorderRadius
-      .circular(10),
-  color: currentIndex == entry.key
-  ? Colors.green
-      : Colors.redAccent,
-  ),
-  ),
-  );
-  },
-  )
-      .toList(),
-  ),
-  ),
-  ],
-  ),
-  ],
-  ),
-  Container(
+    Column(
+      children: [
+        Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: InkWell(
+                onTap: () {
+                  print(currentIndex);
+                },
+                child: CarouselSlider(
+                  items: imageList.map(
+                        (item) => Container(
+                      width: 380,
+                      height: 380,  // Make sure width and height are the same for a perfect circle
+                      decoration: BoxDecoration(
+                        borderRadius:BorderRadius.circular(40),
+                          image: DecorationImage(
+                          image: AssetImage(
+                            item['image_path'],
+                          ),
+                            fit: BoxFit.fill,
+                      ),
+
+                      ),
+                  ),
+                  ).toList(),
+                  carouselController: carouselController,
+                  options: CarouselOptions(
+                    scrollPhysics: const BouncingScrollPhysics(),
+                    autoPlay: false,
+                    aspectRatio: 2,
+                    viewportFraction: 1,
+                    height: 300,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        currentIndex = index;
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 10,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: imageList
+                    .asMap()
+                    .entries
+                    .map(
+                      (entry) {
+                    return GestureDetector(
+                      onTap: () => carouselController.animateToPage(entry.key),
+                      child: Container(
+                        width: currentIndex == entry.key ? 17 : 7,
+                        height: 8.0,
+                        margin: const EdgeInsets.symmetric(horizontal: 3.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: currentIndex == entry.key
+                              ? Colors.green
+                              : Colors.redAccent,
+                        ),
+                      ),
+                    );
+                  },
+                )
+                    .toList(),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+
+    Container(
   width: double.infinity,
   height: 100,
   padding: EdgeInsets.only(left: 30, bottom: 5),
